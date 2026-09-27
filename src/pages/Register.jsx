@@ -8,6 +8,8 @@ import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import api from '../api/axios';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 const formSchema = z.object({
     name: z.string().min(5, "Name must be atleast 5 characters").trim(),
@@ -20,6 +22,14 @@ const formSchema = z.object({
 });
 
 const Register = () => {
+
+    const navigate = useNavigate();
+    const {token} = useAuth();
+
+     if(token){
+        navigate("/dashboard");
+    }
+
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -42,13 +52,14 @@ const Register = () => {
 
             if (response.status === 201){
                 toast.success("Account created successfully");
+                navigate("/login");
             }else{
                 toast.error( response.message || "Registration failed");
             }
 
         } catch (error) {
             toast.error( error.message || "Some error occured");
-            console.log(error.message);
+            console.log(error);
         }
 
     }
@@ -76,7 +87,7 @@ const Register = () => {
                                     {...field}
                                     id={field.name}
                                     type="text"
-                                    placeholder="Ram Bahadur"
+                                    placeholder="shristi"
                                     aria-invalid={fieldState.invalid}
                                 />
                                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -94,7 +105,7 @@ const Register = () => {
                                     {...field}
                                     id={field.name}
                                     type="email"
-                                    placeholder="abc@gmail.com"
+                                    placeholder="shristi22@gmail.com"
                                     aria-invalid={fieldState.invalid}
                                 />
                                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

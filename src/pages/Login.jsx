@@ -8,6 +8,8 @@ import { Input } from '../components/ui/input'
 import { Button } from '../components/ui/button'
 import api from '../api/axios'
 import { toast } from 'sonner'
+import { useNavigate } from 'react-router-dom'
+import useAuth from '../hooks/useAuth'
 
 const formSchema = z.object({
     email: z.string().email().min(5, "Must be atleast 5 characters").trim(),
@@ -15,6 +17,14 @@ const formSchema = z.object({
 })
 
 const Login = () => {
+
+    const navigate = useNavigate();
+
+    const { onLogin, token } = useAuth();
+
+    if(token){
+        navigate("/dashboard");
+    }
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -28,10 +38,14 @@ const Login = () => {
         console.log(data);
 
         try{
-            const response = await api.post("/auth/login");
+            const response = await api.post("/auth/login", data);
 
             if (response.status === 200){
                 toast.success("Logged in successfully");
+
+                onLogin(response.data.token, data);
+                
+                navigate("/dashboard");
             }else{
                 toast.error( response.message || "Login failed");
             }
@@ -53,7 +67,7 @@ const Login = () => {
 
                         <Card className="h-full flex flex-col justify-evenly">
                             <CardHeader>
-                                <CardTitle>Register to Wanderwise</CardTitle>
+                                <CardTitle>Login to Wanderwise</CardTitle>
                                 <CardDescription>Enter your credentials to continue.</CardDescription>
                                 <CardAction>
                                     <img src="/wanderwiseLogo.png" alt="wanderwise logo" className='w-12' />
@@ -101,11 +115,15 @@ const Login = () => {
                                 
                             </CardContent>
 
-                            <CardFooter>
-                                <Button type="submit">Register</Button>
+                            <CardFooter className={"flex flex-col"}>
+                                <Button type="submit" className={"w-full mb-4"}>Login</Button>
+
+                                <p>Don't have an account? <a href="/register"> Register</a></p>
                             </CardFooter>
 
                         </Card>
+
+                        
 
                     </form>
                 </div>
