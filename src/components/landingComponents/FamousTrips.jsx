@@ -33,7 +33,7 @@ const FamousTrips = () => {
     const navigate = useNavigate();
 
     return (
-        <div className='px-20 py-24'>
+        <div className='px-4 md:px-8 lg:px-24 py-24'>
             {/* heading */}
             <div>
                 <h2 className='text-4xl font-bold text-center'>Famous Trips</h2>
